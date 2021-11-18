@@ -136,6 +136,11 @@ Witt.can_dig = function(node,tool)
            return true
        end
    end
+   
+   -- node is not registered
+   if not minetest.registered_nodes[node.name] then
+       return true
+   end
 
    return false
 end
@@ -170,6 +175,11 @@ local function capitalize(str) -- Capitalize every word in a string, looks good 
 end
 
 Witt.describe_node = function (node) -- Return a string that describes the node and mod
+	if not minetest.registered_nodes[node.name] then -- indexing a nil value will cause a crash, so only continue with the function if the node actually exists in the registered_nodes table
+		-- if the node doesn't exist in the registered_nodes table, return the technical name and "Unknown Node" as the mod
+		return node.name, "Unknown Node" -- "Unknown Node" isn't really a mod but hopefully that's not a problem
+	end
+	
     local mod, nodename = minetest.registered_nodes[node.name].mod_origin, minetest.registered_nodes[node.name].description -- Get basic (not pretty) info
     if nodename == "" then -- If it doesn't have a proper name, just use the technical one
         nodename = node.name
@@ -181,6 +191,10 @@ Witt.describe_node = function (node) -- Return a string that describes the node 
 end
 
 Witt.handle_tiles =  function (node) -- Return an image of the tile
+	if not node then -- indexing a nil value (with node.tiles) will cause a crash, so only continue with the function if the node actually exists
+		return minetest.inventorycube("unknown_node.png", "unknown_node.png", "unknown_node.png") -- if node is nil, return the unknown node texture
+	end
+	
     local tiles = node.tiles
     local resize_string = ""
 

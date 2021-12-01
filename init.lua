@@ -113,7 +113,7 @@ minetest.register_chatcommand("witt", { -- Command to turn witt on/off
 		local player = minetest.get_player_by_name(name)
 		if not player then return false end
         player_to_enabled[player] = param == "on"
-        blank_player_hud(player)
+        Witt.blank_player_hud(player)
         player_to_cnode[player] = nil
         return true
 	end
